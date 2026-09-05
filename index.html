@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Citação (In)direta</title>
+<style>
+	:root
+	{
+		--bg:#f4f1eb;
+		--surface:#ffffff;
+		--surface-soft:#faf8f4;
+		--text:#24211d;
+		--muted:#77716a;
+		--border:#e5dfd6;
+		--accent:#8a6848;
+		--accent-soft:#eee5db;
+		--shadow:0 8px 30px rgba(42,34,25,.07);
+	}
+
+	*
+	{
+		box-sizing:border-box;
+	}
+
+	html
+	{
+		scroll-behavior:smooth;
+	}
+
+	body
+	{
+		margin:0;
+		background:var(--bg);
+		color:var(--text);
+		font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+		line-height:1.6;
+	}
+
+	button
+	{
+		font:inherit;
+	}
+
+	img
+	{
+		display:block;
+		max-width:100%;
+	}
+
+	.topo
+	{
+		max-width:1120px;
+		margin:auto;
+		padding:40px 24px 24px;
+	}
+
+	.marca
+	{
+		font-size:13px;
+		text-transform:uppercase;
+		letter-spacing:.18em;
+		color:var(--muted);
+	}
+
+	.podcast
+	{
+		max-width:1120px;
+		margin:auto;
+		padding:20px 24px 70px;
+	}
+
+	.hero
+	{
+		display:grid;
+		grid-template-columns:minmax(260px, 360px) 1fr;
+		gap:55px;
+		align-items:center;
+	}
+
+	.capa
+	{
+		width:100%;
+		aspect-ratio:1;
+		object-fit:cover;
+		/*border-radius:18px;*/
+		box-shadow:var(--shadow);
+	}
+
+	.infoPodcast
+	{
+		max-width:650px;
+	}
+
+	.categoria
+	{
+		display:inline-block;
+		margin-bottom:12px;
+		color:var(--accent);
+		font-size:12px;
+		font-weight:700;
+		text-transform:uppercase;
+		letter-spacing:.14em;
+	}
+
+	h1
+	{
+		margin:0 0 16px;
+		font-family:Georgia, "Times New Roman", serif;
+		font-size:clamp(38px, 5vw, 67px);
+		line-height:1.02;
+		font-weight:500;
+		letter-spacing:-.035em;
+	}
+
+	.descricao
+	{
+		margin:0;
+		max-width:610px;
+		color:#59534d;
+		font-size:17px;
+		text-align: justify;
+	}
+
+	.detalhesPodcast
+	{
+		display:flex;
+		flex-wrap:wrap;
+		gap:8px 22px;
+
+		margin-top:26px;
+
+		color:var(--muted);
+		font-size:14px;
+	}
+
+	.areaEpisodios
+	{
+		margin-top:75px;
+	}
+
+	.cabecalhoLista
+	{
+		display:flex;
+		justify-content:space-between;
+		align-items:end;
+		gap:20px;
+		padding-bottom:17px;
+		border-bottom:1px solid var(--border);
+	}
+
+	.cabecalhoLista h2
+	{
+		margin:0;
+		font-family:Georgia, "Times New Roman", serif;
+		font-size:31px;
+		font-weight:500;
+	}
+
+	.quantidade
+	{
+		color:var(--muted);
+		font-size:14px;
+	}
+
+	.episodio
+	{
+		border-bottom:1px solid var(--border);
+	}
+
+	.episodioTopo
+	{
+		width:100%;
+		display:grid;
+		grid-template-columns:65px 1fr 35px;
+		gap:18px;
+		align-items:center;
+		padding:28px 4px;
+		border:0;
+		background:transparent;
+		color:inherit;
+		text-align:left;
+		cursor:pointer;
+	}
+
+	.numero
+	{
+		font-family:Georgia, "Times New Roman", serif;
+		font-size:27px;
+		color:#a0988f;
+	}
+
+	.episodioTexto h3
+	{
+		margin:0 0 5px;
+		font-family:Georgia, "Times New Roman", serif;
+		font-size:22px;
+		font-weight:500;
+	}
+
+	.episodioMeta
+	{
+		color:var(--muted);
+		font-size:13px;
+	}
+
+	.seta
+	{
+		width:30px;
+		height:30px;
+
+		display:grid;
+		place-items:center;
+
+		color:var(--muted);
+		font-size:20px;
+
+		transition:transform .25s ease;
+	}
+
+	.episodio.aberto .seta
+	{
+		transform:rotate(180deg);
+	}
+
+	.episodioConteudo
+	{
+		display:grid;
+		grid-template-rows:0fr;
+		transition:grid-template-rows .35s ease;
+	}
+
+	.episodio.aberto .episodioConteudo
+	{
+		grid-template-rows:1fr;
+	}
+
+	.episodioInterno
+	{
+		overflow:hidden;
+	}
+
+	.conteudoPadding
+	{
+		padding:0 4px 34px 0px;
+	}
+
+	.sinopse
+	{
+		max-width:920px;
+		margin:0 0 25px;
+		color:#625c55;
+		text-align: justify;
+	}
+
+	.partes
+	{
+		display:grid;
+		gap:11px;
+		max-width:780px;
+	}
+
+	.parte
+	{
+		background:var(--surface);
+		border:1px solid var(--border);
+		border-radius:12px;
+		overflow:hidden;
+	}
+
+	.parteTopo
+	{
+		display:flex;
+		align-items:center;
+		gap:14px;
+		padding:14px 16px;
+	}
+
+	.botaoPlay
+	{
+		flex:none;
+		width:42px;
+		height:42px;
+		border:0;
+		border-radius:50%;
+		display:grid;
+		place-items:center;
+		background:var(--text);
+		color:white;
+		cursor:pointer;
+		transition: transform .15s ease, background .15s ease;
+	}
+
+	.botaoPlay:hover
+	{
+		transform:scale(1.05);
+		background:var(--accent);
+	}
+
+	.playIcon
+	{
+		margin-left:2px;
+		font-size:14px;
+	}
+
+	.parteInfo
+	{
+		flex:1;
+		min-width:0;
+	}
+
+	.parteNome
+	{
+		font-weight:600;
+		font-size:14px;
+	}
+
+	.parteDuracao
+	{
+		margin-top:1px;
+		color:var(--muted);
+		font-size:12px;
+	}
+
+	.playerDetalhes
+	{
+		display:none;
+		padding:0 16px 15px 72px;
+	}
+
+	.parte.tocando .playerDetalhes
+	{
+		display:block;
+	}
+
+	.progressoLinha
+	{
+		display:flex;
+		align-items:center;
+		gap:10px;
+	}
+
+	.tempo
+	{
+		min-width:35px;
+		color:var(--muted);
+		font-size:11px;
+	}
+
+	.progresso
+	{
+		flex:1;
+		height:4px;
+		background:#ded8d0;
+		border-radius:50px;
+		cursor:pointer;
+		overflow:hidden;
+	}
+
+	.progressoAtual
+	{
+		width:0;
+		height:100%;
+		background:var(--accent);
+		border-radius:inherit;
+	}
+
+	footer
+	{
+		max-width:1120px;
+		margin:auto;
+		padding:0 24px 45px;
+		color:#918a82;
+		font-size:12px;
+	}
+
+
+	/*========================= RESPONSIVO ========================= */
+	@media(max-width:760px)
+	{
+		.topo
+		{
+			padding:25px 20px 12px;
+		}
+
+		.podcast
+		{
+			padding:15px 20px 50px;
+		}
+
+		.hero
+		{
+			grid-template-columns:1fr;
+			gap:30px;
+		}
+
+		.capa
+		{
+			max-width:370px;
+			margin:auto;
+		}
+
+		.infoPodcast
+		{
+			text-align:center;
+			margin:auto;
+		}
+
+		.descricao
+		{
+			font-size:16px;
+		}
+
+		.detalhesPodcast
+		{
+			justify-content:center;
+		}
+
+		.areaEpisodios
+		{
+			margin-top:55px;
+		}
+
+		.cabecalhoLista h2
+		{
+			font-size:27px;
+		}
+
+		.episodioTopo
+		{
+			grid-template-columns:50px 1fr 28px;
+			gap:11px;
+			padding:24px 0;
+		}
+
+		.numero
+		{
+			font-size:21px;
+		}
+
+		.episodioTexto h3
+		{
+			font-size:19px;
+			line-height:1.3;
+		}
+
+		.conteudoPadding
+		{
+			padding:0 0 28px 53px;
+		}
+
+		.parteTopo
+		{
+			padding:12px;
+		}
+
+		.playerDetalhes
+		{
+			padding:0 12px 13px 66px;
+		}
+	}
+
+	@media(max-width:480px)
+	{
+
+		.conteudoPadding
+		{
+			padding-left:0;
+		}
+
+		.sinopse
+		{
+			font-size:14px;
+			text-align: justify;
+		}
+
+		.episodioTopo
+		{
+			grid-template-columns:50px 1fr 25px;
+		}
+
+		.numero
+		{
+			font-size:18px;
+		}
+
+		.parte
+		{
+			border-radius:10px;
+		}
+	}
+</style>
+</head>
+
+<body>
+	<main class="podcast">
+		<section class="hero">
+			<img class="capa" src="Capa.png" alt="Capa do podcast Citação (In)direta">
+			<div class="infoPodcast">
+				<span class="categoria">Literatura</span>
+				<h1>Citação (In)direta</h1>
+				<p class="descricao">
+					Citação (In)direta é um podcast de pequenos encontros com grandes histórias.
+					Em cada episódio, uma frase retirada da literatura ganha um minuto para respirar fora de suas páginas. Descobrimos quem a escreveu e o que ela pode acrescentar para nossas vidas.
+					Talvez você encontre um velho conhecido.
+					Talvez descubra uma história que nunca imaginou ler.
+					Ou talvez leve consigo apenas uma frase.
+					E tudo bem.
+					Porque há frases que terminam no ponto final.
+					E há aquelas que são apenas o começo.
+				</p>
+				<div class="detalhesPodcast">
+					<span>⌛ <b>Duração</b>: 1 Minuto</span>
+					<span>📈 <b>Frequência</b>: Diária</span>
+				</div>
+			</div>
+		</section>
+		<section class="areaEpisodios">
+			<div class="cabecalhoLista">
+				<h2>Episódios</h2>
+				<span
+					class="quantidade"
+					id="quantidadeEpisodios">
+				</span>
+			</div>
+			<div id="listaEpisodios"></div>
+		</section>
+	</main>
+
+<script>
+	//Para adicionar episódios, basta acrescentar objetos neste array.
+	const episodios = [
+		{
+			numero: 0,
+			titulo: "Apresentação",
+			data: "01 de setembro de 2026",
+			descricao:
+				"Conheça um pouco sobre a Iniciativa, seu Idealizador e o(s) roteirista(s). Ao término, um convite especial é feito a você, amigo ouvinte.",
+			partes: [
+				{
+					titulo: "Parte 1 — A Iniciativa",
+					audio: "https://www.medicina.ufmg.br/saudecomciencia/wp-content/uploads/sites/88/2026/07/2026_08_03-Segunda-feira-Contagio.mp3"
+				},
+				{
+					titulo: "Parte 2 — Idealizador e Roteirista(s)",
+					audio: "https://www.medicina.ufmg.br/saudecomciencia/wp-content/uploads/sites/88/2026/07/2026_08_03-Segunda-feira-Contagio.mp3"
+				},
+				{
+					titulo: "Parte 3 — Convite",
+					audio: "https://www.medicina.ufmg.br/saudecomciencia/wp-content/uploads/sites/88/2026/07/2026_08_03-Segunda-feira-Contagio.mp3"
+				}
+			]
+		},
+
+		{
+			numero: 1,
+			titulo: "Pedidos Exacerbados",
+			data: "01 de setembro de 2026",
+			descricao:
+				"<b><i>“A influência na sociedade é um capital que é preciso poupar, para que ele não acabe.”</i></b><br>📕 Guerra e Paz - Liev Tolstói",
+			partes: [
+				{
+					titulo: "Episódio completo",
+					audio: "https://www.medicina.ufmg.br/saudecomciencia/wp-content/uploads/sites/88/2026/07/2026_08_03-Segunda-feira-Contagio.mp3"
+				}
+
+			]
+		},
+
+		{
+			numero: 2,
+			titulo: "Preconceito",
+			data: "02 de setembro de 2026",
+			descricao:
+				"<b><i>“É uma verdade universalmente reconhecida que um homem solteiro, de posse de boa fortuna, deve estar atrás de uma esposa.”</i></b><br>📕 Orgulho e Preconceito - Jane Austen",
+			partes: [
+				{
+					titulo: "Episódio Completo",
+					audio: "https://www.medicina.ufmg.br/saudecomciencia/wp-content/uploads/sites/88/2026/07/2026_08_03-Segunda-feira-Contagio.mp3"
+				}
+			]
+		},
+
+		{
+			numero: 3,
+			titulo: "Máscaras Sociais",
+			data: "03 de setembro de 2026",
+			descricao:
+				"<b><i>“Nós somos aquilo que fingimos ser, então precisamos ter cuidado com aquilo que fingimos ser.”</i></b><br>📕 Mãe Noite - kurt Vonnegut",
+			partes: [
+				{
+					titulo: "Episódio Completo",
+					audio: "https://www.medicina.ufmg.br/saudecomciencia/wp-content/uploads/sites/88/2026/07/2026_08_03-Segunda-feira-Contagio.mp3"
+				}
+			]
+		},
+
+		{
+			numero: 4,
+			titulo: "Preconceito",
+			data: "04 de setembro de 2026",
+			descricao:
+				"<b><i>“Somos feitos da mesma matéria que os sonhos, e nossa pequena vida é cercada pelo sono.”</i></b><br>📕 A Tempestade - William Shakespeare",
+			partes: [
+				{
+					titulo: "Episódio Completo",
+					audio: "https://www.medicina.ufmg.br/saudecomciencia/wp-content/uploads/sites/88/2026/07/2026_08_03-Segunda-feira-Contagio.mp3"
+				}
+			]
+		}
+	];
+
+	const lista = document.getElementById("listaEpisodios");
+	document.getElementById("quantidadeEpisodios").textContent = episodios.length + (episodios.length === 1 ? " episódio" : " episódios");
+
+	episodios.forEach((ep, indice)=>
+	{
+		const elemento = document.createElement("article");
+		elemento.className = "episodio";
+		const quantidadePartes = ep.partes.length;
+		elemento.innerHTML = 
+		`
+		<button class="episodioTopo">
+			<span class="numero">
+				Nº ${String(ep.numero).padStart(3,"0")}
+			</span>
+			<span class="episodioTexto">
+				<h3>${ep.titulo}</h3>
+				<span class="episodioMeta">
+					${ep.data}
+					·
+					${quantidadePartes}
+					${quantidadePartes === 1 ? "parte" : "partes"}
+				</span>
+			</span>
+			<span class="seta">⌄</span>
+		</button>
+		<div class="episodioConteudo">
+			<div class="episodioInterno">
+				<div class="conteudoPadding">
+					<p class="sinopse">
+						${ep.descricao}
+					</p>
+					<div class="partes">
+						${ep.partes.map((parte, parteIndex)=>`
+							<div class="parte">
+								<audio preload="metadata" src="${parte.audio}" class="audioPOD"></audio>
+								<div class="parteTopo">
+									<button class="botaoPlay" aria-label="Reproduzir áudio">
+										<span class="playIcon">▶</span>
+									</button>
+									<div class="parteInfo">
+										<div class="parteNome">
+											${parte.titulo}
+										</div>
+										<div class="parteDuracao">
+											Carregando duração...
+										</div>
+									</div>
+								</div>
+
+								<div class="playerDetalhes">
+									<div class="progressoLinha">
+										<span class="tempo atual">
+											0:00
+										</span>
+										<div class="progresso">
+											<div class="progressoAtual">
+											</div>
+										</div>
+										<span class="tempo total">
+											--:--
+										</span>
+									</div>
+								</div>
+							</div>
+						`).join("")}
+					</div>
+				</div>
+			</div>
+		</div>
+		`;
+		const topo = elemento.querySelector(".episodioTopo");
+		topo.addEventListener("click",()=>{
+			elemento.classList.toggle("aberto");
+		});
+		lista.appendChild(elemento);
+	});
+
+	const todosAudios = document.querySelectorAll("audio.audioPOD");
+
+
+	function formatarTempo(segundos)
+	{
+		if(!isFinite(segundos))
+		{
+			return "--:--";
+		}
+
+		const minutos = Math.floor(segundos / 60);
+
+		const segundosRestantes = Math.floor(segundos % 60);
+
+		return (minutos + ":" + String(segundosRestantes).padStart(2,"0"));
+	}
+
+	todosAudios.forEach(audio=>
+	{
+		const parte          = audio.closest(".parte");
+		const botao          = parte.querySelector(".botaoPlay");
+		const icone          = parte.querySelector(".playIcon");
+		const duracaoTexto   = parte.querySelector(".parteDuracao");
+		const tempoAtual     = parte.querySelector(".atual");
+		const tempoTotal     = parte.querySelector(".total");
+		const progresso      = parte.querySelector(".progresso");
+		const progressoAtual = parte.querySelector(".progressoAtual");
+
+		audio.addEventListener("loadedmetadata",()=>
+		{
+			const duracao =	formatarTempo(audio.duration);
+
+			duracaoTexto.textContent = duracao;
+			tempoTotal.textContent   = duracao;
+		});
+
+		botao.addEventListener("click",()=>
+		{
+
+			if(audio.paused)
+			{
+				todosAudios.forEach(outro=>
+				{
+					if(outro !== audio)
+					{
+						outro.pause();
+						const outraParte = outro.closest(".parte");
+						outraParte.classList.remove("tocando");
+						outraParte.querySelector(".playIcon").textContent = "▶";
+					}
+
+				});
+				audio.play();
+				parte.classList.add("tocando");
+				icone.textContent = "❚❚";
+			}
+			else
+			{
+				audio.pause();
+				icone.textContent = "▶";
+			}
+		});
+
+		audio.addEventListener("timeupdate",()=>
+		{
+
+			const percentual           = (audio.currentTime / audio.duration) * 100;
+			progressoAtual.style.width = percentual + "%";
+			tempoAtual.textContent     = formatarTempo(audio.currentTime);
+		});
+
+		progresso.addEventListener("click",(event)=>
+		{
+			const area        = progresso.getBoundingClientRect();
+			const percentual  = (event.clientX - area.left) / area.width;
+			audio.currentTime = percentual * audio.duration;
+		});
+
+		audio.addEventListener("ended",()=>
+		{
+			icone.textContent = "▶";
+			progressoAtual.style.width = "0%";
+			tempoAtual.textContent = "0:00";
+			parte.classList.remove("tocando");
+		});
+	});
+</script>
+</body>
+</html>
